@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>মাঙ্গা বাংলা - Manga Reader</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #e63946;
+            --primary-dark: #c1121f;
+            --secondary: #6c5ce7;
+            --bg-dark: #0f0f1a;
+            --bg-card: #1a1a2e;
+            --bg-card-hover: #252542;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --accent: #ffd60a;
+            --gradient-1: linear-gradient(135deg, #e63946 0%, #6c5ce7 100%);
+            --gradient-2: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        body {
+            font-family: 'Noto Sans Bengali', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--bg-card);
+            padding: 15px 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .search-bar {
+            flex-grow: 1;
+            margin: 0 40px;
+            max-width: 500px;
+        }
+
+        .search-input-group {
+            position: relative;
+        }
+
+        #searchInput {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            border: none;
+            border-radius: 25px;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            outline: none;
+            transition: box-shadow 0.3s;
+        }
+
+        #searchInput::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .search-input-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            margin-left: 20px;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        /* Main Content */
+        .category-filter {
+            display: flex;
+            gap: 10px;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .category-btn {
+            background-color: var(--bg-card);
+            color: var(--text-secondary);
+            padding: 8px 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+            font-size: 0.9rem;
+            min-width: fit-content;
+        }
+
+        .category-btn:hover {
+            background-color: var(--bg-card-hover);
+        }
+
+        .category-btn.active {
+            background: var(--gradient-1);
+            color: var(--text-primary);
+            border-color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Manga Grid */
+        .manga-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+        }
+
+        .manga-card {
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .manga-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .manga-thumbnail {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-bottom: 3px solid var(--primary);
+            display: block;
+        }
+
+        .manga-info {
+            padding: 10px;
+            position: relative;
+        }
+
+        .manga-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 5px;
+        }
+
+        .manga-latest-chapter {
+            font-size: 0.85rem;
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        .status-badge {
+            position: absolute;
+            top: -245px; /* Adjust based on image height */
+            right: 0;
+            background-color: var(--secondary);
+            color: var(--text-primary);
+            padding: 5px 10px;
+            border-bottom-left-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.85);
+            padding-top: 50px;
+        }
+
+        .modal-content {
+            background-color: var(--bg-card);
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 900px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+            position: relative;
+            animation: slideIn 0.4s;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .close-btn {
+            color: var(--text-secondary);
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            font-size: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close-btn:hover,
+        .close-btn:focus {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .manga-detail-header {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 20px;
+            align-items: flex-start;
+        }
+
+        .manga-detail-image {
+            width: 150px;
+            height: 220px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 3px solid var(--primary);
+            flex-shrink: 0;
+        }
+
+        .manga-detail-info h2 {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .manga-detail-info p {
+            margin-bottom: 5px;
+            color: var(--text-secondary);
+        }
+
+        .manga-detail-info .status {
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .manga-detail-description {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .chapter-section h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--primary);
+            padding-left: 10px;
+        }
+
+        .chapter-search-group {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        #chapterSearch {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            border: none;
+            border-radius: 8px;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            outline: none;
+        }
+
+        .chapter-search-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        .chapter-list {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .chapter-item {
+            display: block;
+            padding: 10px;
+            margin-bottom: 5px;
+            background-color: var(--bg-dark);
+            border-radius: 5px;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .chapter-item:hover {
+            background-color: var(--bg-card-hover);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .search-bar {
+                margin: 0;
+                width: 100%;
+                order: 3;
+            }
+
+            .nav-links {
+                order: 2;
+                margin-top: 10px;
+            }
+
+            .nav-links a {
+                margin-left: 10px;
+            }
+
+            .manga-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            }
+            
+            .manga-thumbnail {
+                height: 200px;
+            }
+            
+            .manga-detail-header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .manga-detail-image {
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header>
+        <div class="header-content">
+            <a href="#" class="logo">মাঙ্গা বাংলা</a>
+            <div class="search-bar">
+                <div class="search-input-group">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="মাঙ্গা খুঁজুন...">
+                </div>
+            </div>
+            <nav class="nav-links">
+                <a href="#">হোম</a>
+                <a href="#">জনপ্রিয়</a>
+                <a href="#">যোগাযোগ</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Category Filter -->
+        <div class="category-filter" id="categoryFilter">
+            <button class="category-btn active">সকল</button>
+            <button class="category-btn">অ্যাকশন</button>
+            <button class="category-btn">অ্যাডভেঞ্চার</button>
+            <button class="category-btn">রোমান্স</button>
+            <button class="category-btn">ফ্যান্টাসি</button>
+            <button class="category-btn">স্কুল লাইফ</button>
+            <button class="category-btn">কমিক</button>
+        </div>
+
+        <!-- Manga Grid -->
+        <div class="manga-grid" id="mangaGrid">
+            <!-- Manga cards will be injected here by JavaScript -->
+            <div class="text-center p-10 col-span-full" id="loadingMessage">ডেটা লোড হচ্ছে...</div>
+            <div class="text-center p-10 col-span-full hidden" id="errorMessage" style="color: var(--primary);">ডেটা লোড করতে ব্যর্থ হয়েছে।</div>
+        </div>
+    </main>
+
+    <!-- Manga Detail Modal -->
+    <div id="mangaModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <div id="modalContent">
+                <!-- Content will be injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for Firebase and Logic -->
+    <script type="module">
+        // =========================================================================
+        // FIREBASE SETUP AND INITIALIZATION
+        // =========================================================================
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, query, onSnapshot, doc, getDoc, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Global Firebase variables
+        let app;
+        let auth;
+        let db;
+        let userId = null;
+        let isAuthReady = false;
+
+        // Data storage
+        let mangaList = [];
+        let chaptersData = {}; // Stores chapter lists keyed by mangaId
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+
+        // Firestore collection paths (Public Data)
+        const getMangaCollectionRef = () => collection(db, `artifacts/${appId}/public/data/mangas`);
+        const getChapterCollectionRef = (mangaId) => collection(db, `artifacts/${appId}/public/data/chapters`); // Chapters will be sub-documents or stored separately
+
+        // Initialize Firebase and Authenticate
+        async function setupFirebase() {
+            try {
+                // Set Firestore log level for debugging
+                setLogLevel('error');
+
+                if (Object.keys(firebaseConfig).length === 0) {
+                    console.error("Firebase config not available.");
+                    return;
+                }
+                
+                app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+
+                // Authentication
+                if (typeof __initial_auth_token !== 'undefined') {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                // Wait for auth state change to confirm user ID
+                onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        userId = user.uid;
+                    } else {
+                        // Fallback for anonymous user
+                        userId = auth.currentUser?.uid || 'anonymous-user'; 
+                    }
+                    isAuthReady = true;
+                    console.log("Firebase Auth Ready. User ID:", userId);
+                    // Start listening for data only after auth is ready
+                    startDataListeners(); 
+                });
+
+            } catch (error) {
+                console.error("Firebase setup failed:", error);
+                document.getElementById('loadingMessage').classList.add('hidden');
+                document.getElementById('errorMessage').classList.remove('hidden');
+            }
+        }
+
+        // =========================================================================
+        // DATA HANDLING (Replacing LocalStorage with Firestore)
+        // =========================================================================
+
+        // Function to start real-time data listeners
+        function startDataListeners() {
+            // 1. Listen to Manga List
+            const mangaQ = query(getMangaCollectionRef());
+            onSnapshot(mangaQ, (snapshot) => {
+                try {
+                    mangaList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    // Sort the list by creation date or another relevant field if available
+                    mangaList.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0)); 
+                    renderMangaGrid(mangaList);
+                    document.getElementById('loadingMessage').classList.add('hidden');
+                } catch (error) {
+                    console.error("Error fetching manga list:", error);
+                    document.getElementById('errorMessage').classList.remove('hidden');
+                }
+            }, (error) => {
+                console.error("Manga Snapshot Listener Error:", error);
+                document.getElementById('errorMessage').classList.remove('hidden');
+            });
+        }
+        
+        // Function to fetch chapters for a specific manga (using a simple getDoc for now, but in a real app, this would be a separate chapters collection query)
+        async function fetchChaptersForManga(mangaId) {
+            if (chaptersData[mangaId]) return chaptersData[mangaId];
+
+            try {
+                // Assuming chapters data is stored in a document named after the manga ID in the chapters collection
+                const chapterDocRef = doc(db, `artifacts/${appId}/public/data/chapters`, mangaId);
+                const docSnap = await getDoc(chapterDocRef);
+                
+                if (docSnap.exists()) {
+                    // Chapters array is expected to be inside the document data
+                    const chapters = docSnap.data().chapters || []; 
+                    chaptersData[mangaId] = chapters;
+                    return chapters;
+                } else {
+                    return [];
+                }
+            } catch (error) {
+                console.error("Error fetching chapters:", error);
+                return [];
+            }
+        }
+
+        // =========================================================================
+        // UI RENDERING AND INTERACTION LOGIC
+        // =========================================================================
+
+        function renderMangaGrid(mangas) {
+            const grid = document.getElementById('mangaGrid');
+            grid.innerHTML = ''; // Clear previous content
+
+            if (mangas.length === 0) {
+                grid.innerHTML = `<div class="text-center p-10 col-span-full text-secondary">কোনো মাঙ্গা পাওয়া যায়নি।</div>`;
+                return;
+            }
+
+            mangas.forEach(manga => {
+                const card = document.createElement('div');
+                card.className = 'manga-card';
+                card.setAttribute('data-id', manga.id);
+                card.onclick = () => openModal(manga);
+
+                const latestChapterText = manga.latestChapter ? `অধ্যায় ${manga.latestChapter}` : 'N/A';
+                const statusText = manga.status === 'ongoing' ? 'চলমান' : 'সম্পন্ন';
+
+                card.innerHTML = `
+                    <img src="${manga.imageUrl || 'https://placehold.co/180x250/1a1a2e/ffffff?text=Image'}" alt="${manga.title}" class="manga-thumbnail">
+                    <span class="status-badge">${statusText}</span>
+                    <div class="manga-info">
+                        <div class="manga-title">${manga.title}</div>
+                        <div class="manga-latest-chapter">${latestChapterText}</div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        async function openModal(manga) {
+            const modal = document.getElementById('mangaModal');
+            const modalContent = document.getElementById('modalContent');
+            
+            // Show loading state
+            modalContent.innerHTML = `<div class="text-center py-20 text-secondary"><i class="fas fa-spinner fa-spin mr-2"></i>অধ্যায় লোড হচ্ছে...</div>`;
+            modal.style.display = 'block';
+
+            // Fetch chapters
+            const chapters = await fetchChaptersForManga(manga.id);
+            
+            const chaptersHTML = chapters.length > 0
+                ? chapters.map(ch => 
+                    `<a href="#" class="chapter-item" data-chapter-id="${ch.id}" onclick="event.preventDefault(); alert('Chapter ${ch.title} clicked! (In a real app, this would lead to the reader page.)')">
+                        অধ্যায় ${ch.title}
+                    </a>`
+                ).join('')
+                : `<div class="text-secondary text-center p-3">কোনো অধ্যায় পাওয়া যায়নি।</div>`;
+
+
+            modalContent.innerHTML = `
+                <div class="manga-detail-header">
+                    <img src="${manga.imageUrl || 'https://placehold.co/150x220/1a1a2e/ffffff?text=Image'}" alt="${manga.title}" class="manga-detail-image">
+                    <div class="manga-detail-info">
+                        <h2>${manga.title}</h2>
+                        <p><strong>লেখক:</strong> ${manga.author || 'অজানা'}</p>
+                        <p><strong>ধরণ:</strong> ${manga.genres?.join(', ') || 'N/A'}</p>
+                        <p><strong>সর্বশেষ আপডেট:</strong> ${manga.latestChapter ? `অধ্যায় ${manga.latestChapter}` : 'N/A'}</p>
+                        <p><strong>স্থিতি:</strong> <span class="status">${manga.status === 'ongoing' ? 'চলমান' : 'সম্পন্ন'}</span></p>
+                    </div>
+                </div>
+                <div class="manga-detail-description">
+                    <p>${manga.description || 'এই মাঙ্গাটির কোনো বিবরণ নেই।'}</p>
+                </div>
+
+                <div class="chapter-section mt-8">
+                    <h3>অধ্যায়সমূহ</h3>
+                    <div class="chapter-search-group">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="chapterSearch" placeholder="অধ্যায় খুঁজুন...">
+                    </div>
+                    <div class="chapter-list">
+                        ${chaptersHTML}
+                    </div>
+                </div>
+            `;
+            
+            // Re-attach chapter search listener after content is loaded
+            document.getElementById('chapterSearch')?.addEventListener('input', function(e) {
+                const query = e.target.value.toLowerCase();
+                document.querySelectorAll('.chapter-item').forEach(item => {
+                    const text = item.textContent.toLowerCase();
+                    // Check if chapter text includes the search query
+                    item.style.display = text.includes(query) ? 'block' : 'none'; 
+                });
+            });
+
+        }
+
+        window.openModal = openModal; // Make function globally accessible for inline onclick (or use event delegation)
+
+        function closeModal() {
+            document.getElementById('mangaModal').style.display = 'none';
+        }
+
+        window.closeModal = closeModal; // Make function globally accessible
+
+        // =========================================================================
+        // INITIALIZATION AND EVENT LISTENERS
+        // =========================================================================
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Setup Firebase
+            setupFirebase(); 
+            
+            // Close modal on overlay click
+            document.getElementById('mangaModal').addEventListener('click', function(e) {
+                if (e.target === this) closeModal();
+            });
+
+            // ESC key to close modal
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') closeModal();
+            });
+
+            // Category buttons (Client-side filtering based on global mangaList)
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    const category = this.textContent.trim();
+                    
+                    let filteredList = mangaList;
+                    if (category !== 'সকল') {
+                         // Simple case-insensitive match on genres array
+                        filteredList = mangaList.filter(manga => manga.genres?.some(g => g.toLowerCase() === category.toLowerCase()));
+                    }
+                    renderMangaGrid(filteredList);
+                });
+            });
+
+            // Search functionality (Client-side filtering based on global mangaList)
+            document.getElementById('searchInput').addEventListener('input', function(e) {
+                const query = e.target.value.toLowerCase();
+                const filteredList = mangaList.filter(manga => 
+                    manga.title.toLowerCase().includes(query) || 
+                    manga.author.toLowerCase().includes(query) ||
+                    manga.description.toLowerCase().includes(query)
+                );
+                renderMangaGrid(filteredList);
+            });
+        });
+    </script>
+</body>
+</html>
+

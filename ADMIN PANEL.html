@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>মাঙ্গা অ্যাডমিন প্যানেল</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #0f0f1a;
+            --bg-card: #1a1a2e;
+            --bg-input: #252542;
+            --primary: #e63946;
+            --primary-dark: #c1121f;
+            --secondary: #6c5ce7;
+            --success: #00b894;
+            --warning: #fdcb6e;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --border: rgba(255, 255, 255, 0.1);
+            --gradient: linear-gradient(135deg, #e63946 0%, #6c5ce7 100%);
+        }
+
+        body {
+            font-family: 'Noto Sans Bengali', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background-color: var(--bg-card);
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            flex-shrink: 0;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background-color 0.3s, color 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+        }
+
+        .nav-link:hover {
+            background-color: var(--bg-input);
+            color: var(--text-primary);
+        }
+
+        .nav-link.active {
+            background: var(--gradient);
+            color: var(--text-primary);
+            box-shadow: 0 4px 10px rgba(230, 57, 70, 0.3);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            border-left: 4px solid var(--primary);
+            padding-left: 15px;
+        }
+
+        /* Stats Card */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background-color: var(--bg-card);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stat-info .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-info .stat-label {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .stat-icon {
+            font-size: 3rem;
+            color: var(--secondary);
+            opacity: 0.6;
+        }
+
+        /* Form Styling */
+        .card {
+            background-color: var(--bg-card);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background-color: var(--bg-input);
+            color: var(--text-primary);
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.3);
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: opacity 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: var(--text-primary);
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+
+        .btn-secondary {
+            background-color: var(--bg-input);
+            color: var(--text-secondary);
+            margin-left: 10px;
+        }
+
+        .btn-danger {
+            background-color: var(--primary-dark);
+            color: var(--text-primary);
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            color: var(--text-primary);
+        }
+
+        /* Table Styling */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .data-table th, .data-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .data-table th {
+            background-color: var(--bg-input);
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+        }
+
+        .data-table tr:hover {
+            background-color: var(--bg-card-hover);
+        }
+
+        .manga-title-cell {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .table-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-ongoing {
+            background-color: rgba(255, 215, 0, 0.2);
+            color: var(--warning);
+        }
+
+        .status-completed {
+            background-color: rgba(0, 184, 148, 0.2);
+            color: var(--success);
+        }
+
+        .action-btns button {
+            margin-right: 5px;
+        }
+
+        /* Message Box */
+        .message-box {
+            background-color: var(--bg-input);
+            color: var(--text-primary);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 15px;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+                order: -1;
+            }
+
+            .main-content {
+                padding: 15px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">Manga Admin</div>
+        <nav>
+            <a href="#" class="nav-link active" data-section="dashboard"><i class="fas fa-home"></i>ড্যাশবোর্ড</a>
+            <a href="#" class="nav-link" data-section="manga-manage"><i class="fas fa-book"></i>মাঙ্গা পরিচালনা</a>
+            <a href="#" class="nav-link" data-section="chapter-manage"><i class="fas fa-file-alt"></i>অধ্যায় পরিচালনা</a>
+        </nav>
+        <div id="userIdDisplay" class="mt-8 p-3 text-xs bg-bg-input rounded-lg break-all text-text-secondary">
+            ইউজার আইডি: <span id="currentUserId">Loading...</span>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div id="dashboard" class="content-section">
+            <h1 class="section-title">ড্যাশবোর্ড</h1>
+            <div id="loadingMessage" class="message-box" style="display: block;">ডেটাবেসের সাথে সংযোগ হচ্ছে...</div>
+            <div id="errorMessage" class="message-box" style="display: none; background-color: var(--primary-dark);">ডেটাবেসের সাথে সংযোগ বা ডেটা লোড করতে ব্যর্থ হয়েছে।</div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <div class="stat-number" id="mangaCount">0</div>
+                        <div class="stat-label">মোট মাঙ্গা</div>
+                    </div>
+                    <i class="stat-icon fas fa-book-open"></i>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <div class="stat-number" id="chapterCount">0</div>
+                        <div class="stat-label">মোট অধ্যায় (সাপোর্টেড)</div>
+                    </div>
+                    <i class="stat-icon fas fa-file-alt"></i>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>সাম্প্রতিক মাঙ্গা তালিকা</h2>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>মাঙ্গার নাম</th>
+                                <th>ধরণ</th>
+                                <th>স্থিতি</th>
+                                <th>যোগ করার তারিখ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentMangaList">
+                            <!-- Data will be injected here -->
+                            <tr><td colspan="4" class="text-center text-text-secondary">ডেটা লোড হচ্ছে...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="manga-manage" class="content-section" style="display: none;">
+            <h1 class="section-title">মাঙ্গা পরিচালনা</h1>
+            <div class="card">
+                <h2>নতুন মাঙ্গা যোগ/সম্পাদনা করুন</h2>
+                <div id="mangaMessageBox" class="message-box"></div>
+                <form id="mangaForm">
+                    <input type="hidden" id="mangaId">
+                    <div class="form-group">
+                        <label for="title">মাঙ্গার শিরোনাম</label>
+                        <input type="text" id="title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="author">লেখক</label>
+                        <input type="text" id="author" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="imageUrl">ছবির URL</label>
+                        <input type="text" id="imageUrl" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="genres">ধরণ (কমা দ্বারা আলাদা করুন)</label>
+                        <input type="text" id="genres" placeholder="অ্যাকশন, অ্যাডভেঞ্চার, রোমান্স" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="status">স্থিতি</label>
+                        <select id="status" required>
+                            <option value="ongoing">চলমান</option>
+                            <option value="completed">সম্পন্ন</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">বিবরণ</label>
+                        <textarea id="description" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="mangaSubmitBtn">যোগ করুন</button>
+                    <button type="button" class="btn btn-secondary" id="mangaClearBtn">ফর্ম পরিষ্কার করুন</button>
+                </form>
+            </div>
+            
+            <div class="card">
+                <h2>সকল মাঙ্গা</h2>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>শিরোনাম</th>
+                                <th>স্থিতি</th>
+                                <th>লেখক</th>
+                                <th>অ্যাকশন</th>
+                            </tr>
+                        </thead>
+                        <tbody id="allMangaList">
+                            <!-- Data will be injected here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="chapter-manage" class="content-section" style="display: none;">
+            <h1 class="section-title">অধ্যায় পরিচালনা</h1>
+            <div class="card">
+                <h2>নতুন অধ্যায় যোগ/সম্পাদনা করুন</h2>
+                <div id="chapterMessageBox" class="message-box"></div>
+                <form id="chapterForm">
+                    <input type="hidden" id="chapterDocId"> <!-- ID of the chapter document -->
+                    <div class="form-group">
+                        <label for="mangaSelect">মাঙ্গা নির্বাচন করুন</label>
+                        <select id="mangaSelect" required>
+                            <!-- Options will be populated by JavaScript -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="chapterTitle">অধ্যায় সংখ্যা/শিরোনাম</label>
+                        <input type="text" id="chapterTitle" placeholder="যেমন: 1, 2.5, কিংবা 'বিশেষ অধ্যায় 1'" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="chapterPages">পৃষ্ঠা ডেটা (JSON স্ট্রাকচার)</label>
+                        <textarea id="chapterPages" placeholder='JSON.stringify দিয়ে সেভ করুন। যেমন: ["img_url_1", "img_url_2"]' required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="chapterSubmitBtn">যোগ করুন</button>
+                    <button type="button" class="btn btn-secondary" id="chapterClearBtn">ফর্ম পরিষ্কার করুন</button>
+                </form>
+            </div>
+            
+            <div class="card">
+                <h2>অধ্যায় তালিকা</h2>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>মাঙ্গা</th>
+                                <th>অধ্যায়</th>
+                                <th>পৃষ্ঠা সংখ্যা</th>
+                                <th>অ্যাকশন</th>
+                            </tr>
+                        </thead>
+                        <tbody id="chapterTableList">
+                            <!-- Data will be injected here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for Firebase and Logic -->
+    <script type="module">
+        // =========================================================================
+        // FIREBASE SETUP AND INITIALIZATION
+        // =========================================================================
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, query, onSnapshot, doc, addDoc, setDoc, deleteDoc, getDoc, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Global Firebase variables
+        let app;
+        let auth;
+        let db;
+        let userId = null;
+        let isAuthReady = false;
+
+        // Data storage
+        let mangaList = [];
+        let chapterDocList = []; // List of chapter documents
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+
+        // Firestore collection paths (Public Data for Manga & Chapters)
+        const getMangaCollectionRef = () => collection(db, `artifacts/${appId}/public/data/mangas`);
+        const getChapterDocCollectionRef = () => collection(db, `artifacts/${appId}/public/data/chapters`);
+
+        // Utility function to show/hide messages
+        function showMessage(elementId, message, isError = false) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.textContent = message;
+                element.style.display = 'block';
+                element.style.backgroundColor = isError ? 'var(--primary-dark)' : 'var(--bg-input)';
+                setTimeout(() => {
+                    element.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        // Initialize Firebase and Authenticate
+        async function setupFirebase() {
+            try {
+                // Set Firestore log level for debugging
+                setLogLevel('error');
+
+                if (Object.keys(firebaseConfig).length === 0) {
+                    console.error("Firebase config not available.");
+                    showMessage('errorMessage', "Firebase কনফিগ উপলব্ধ নেই।", true);
+                    return;
+                }
+                
+                app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+
+                // Authentication
+                if (typeof __initial_auth_token !== 'undefined') {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                // Wait for auth state change to confirm user ID
+                onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        userId = user.uid;
+                    } else {
+                        // Fallback for anonymous user
+                        userId = auth.currentUser?.uid || 'anonymous-user'; 
+                    }
+                    isAuthReady = true;
+                    document.getElementById('currentUserId').textContent = userId;
+                    document.getElementById('loadingMessage').style.display = 'none';
+                    console.log("Firebase Auth Ready. User ID:", userId);
+                    // Start listening for data only after auth is ready
+                    startDataListeners(); 
+                });
+
+            } catch (error) {
+                console.error("Firebase setup failed:", error);
+                showMessage('errorMessage', `Firebase সেটআপ ব্যর্থ: ${error.message}`, true);
+            }
+        }
+
+        // =========================================================================
+        // DATA LISTENERS AND UPDATERS
+        // =========================================================================
+
+        // Function to start real-time data listeners
+        function startDataListeners() {
+            if (!db) return; // Guard clause
+
+            // 1. Listen to Manga List
+            const mangaQ = query(getMangaCollectionRef());
+            onSnapshot(mangaQ, (snapshot) => {
+                try {
+                    mangaList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    // Sort the list by creation date
+                    mangaList.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0)); 
+                    
+                    // Update UI elements dependent on mangaList
+                    updateDashboard();
+                    populateMangaDropdown();
+                    renderAllMangaTable(mangaList);
+
+                } catch (error) {
+                    console.error("Error fetching manga list:", error);
+                    showMessage('errorMessage', `মাঙ্গা তালিকা লোড করতে ব্যর্থ: ${error.message}`, true);
+                }
+            }, (error) => {
+                console.error("Manga Snapshot Listener Error:", error);
+                showMessage('errorMessage', `মাঙ্গা ডেটাবেস ত্রুটি: ${error.message}`, true);
+            });
+            
+            // 2. Listen to Chapter Documents
+            const chapterQ = query(getChapterDocCollectionRef());
+            onSnapshot(chapterQ, (snapshot) => {
+                 try {
+                    chapterDocList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    // Chapter documents store an array of chapters
+                    let totalChapters = chapterDocList.reduce((acc, doc) => acc + (doc.chapters ? doc.chapters.length : 0), 0);
+
+                    // Update UI elements dependent on chapter data
+                    document.getElementById('chapterCount').textContent = totalChapters;
+                    document.getElementById('statChapter').textContent = totalChapters; // If statChapter is still used
+                    renderChapterTable(chapterDocList);
+
+                } catch (error) {
+                    console.error("Error fetching chapter documents:", error);
+                    // No need to show major error, just log
+                }
+            }, (error) => {
+                console.error("Chapter Snapshot Listener Error:", error);
+            });
+        }
+
+        // =========================================================================
+        // CRUD OPERATIONS (Replacing LocalStorage functions)
+        // =========================================================================
+
+        // Manga CRUD
+        async function handleMangaFormSubmit(event) {
+            event.preventDefault();
+            
+            if (!isAuthReady || !db) return showMessage('mangaMessageBox', 'ডেটাবেস প্রস্তুত নয়। অপেক্ষা করুন।', true);
+
+            const mangaId = document.getElementById('mangaId').value;
+            const title = document.getElementById('title').value;
+            const author = document.getElementById('author').value;
+            const imageUrl = document.getElementById('imageUrl').value;
+            const genres = document.getElementById('genres').value.split(',').map(g => g.trim()).filter(g => g.length > 0);
+            const status = document.getElementById('status').value;
+            const description = document.getElementById('description').value;
+
+            const mangaData = {
+                title,
+                author,
+                imageUrl,
+                genres,
+                status,
+                description,
+                // latestChapter will be updated when chapters are added
+            };
+
+            try {
+                if (mangaId) {
+                    // Update existing manga
+                    const docRef = doc(getMangaCollectionRef(), mangaId);
+                    await setDoc(docRef, { ...mangaData, updatedAt: new Date().toISOString() }, { merge: true });
+                    showMessage('mangaMessageBox', `মাঙ্গা "${title}" সফলভাবে আপডেট করা হয়েছে।`);
+                } else {
+                    // Add new manga
+                    const docRef = await addDoc(getMangaCollectionRef(), { ...mangaData, createdAt: new Date().toISOString() });
+                    showMessage('mangaMessageBox', `নতুন মাঙ্গা "${title}" সফলভাবে যোগ করা হয়েছে। ID: ${docRef.id}`);
+                }
+                document.getElementById('mangaForm').reset();
+                document.getElementById('mangaId').value = '';
+                document.getElementById('mangaSubmitBtn').textContent = 'যোগ করুন';
+            } catch (error) {
+                console.error("Error saving manga:", error);
+                showMessage('mangaMessageBox', `মাঙ্গা সেভ করতে ব্যর্থ: ${error.message}`, true);
+            }
+        }
+
+        async function deleteManga(mangaId, title) {
+            if (!confirm(`আপনি কি নিশ্চিত যে আপনি "${title}" মাঙ্গাটি মুছে ফেলতে চান?`)) return;
+            if (!isAuthReady || !db) return showMessage('mangaMessageBox', 'ডেটাবেস প্রস্তুত নয়। অপেক্ষা করুন।', true);
+
+            try {
+                // 1. Delete the manga document
+                await deleteDoc(doc(getMangaCollectionRef(), mangaId));
+
+                // 2. Attempt to delete the corresponding chapter document (optional, based on schema)
+                await deleteDoc(doc(getChapterDocCollectionRef(), mangaId));
+                
+                showMessage('mangaMessageBox', `মাঙ্গা "${title}" এবং এর অধ্যায় ডেটা সফলভাবে মুছে ফেলা হয়েছে।`, false);
+            } catch (error) {
+                console.error("Error deleting manga:", error);
+                showMessage('mangaMessageBox', `মাঙ্গা মুছে ফেলতে ব্যর্থ: ${error.message}`, true);
+            }
+        }
+        
+        // Chapter CRUD (Simplified: managing chapter documents that contain an array of chapters)
+        async function handleChapterFormSubmit(event) {
+            event.preventDefault();
+
+            if (!isAuthReady || !db) return showMessage('chapterMessageBox', 'ডেটাবেস প্রস্তুত নয়। অপেক্ষা করুন।', true);
+
+            const mangaId = document.getElementById('mangaSelect').value;
+            const chapterTitle = document.getElementById('chapterTitle').value.trim();
+            const chapterPagesRaw = document.getElementById('chapterPages').value.trim();
+            const chapterDocId = document.getElementById('chapterDocId').value;
+
+            if (!mangaId) return showMessage('chapterMessageBox', 'মাঙ্গা নির্বাচন করুন।', true);
+
+            let pages;
+            try {
+                pages = JSON.parse(chapterPagesRaw);
+                if (!Array.isArray(pages)) throw new Error("JSON Array Expected");
+            } catch (e) {
+                return showMessage('chapterMessageBox', 'পৃষ্ঠা ডেটা একটি সঠিক JSON অ্যারে হতে হবে।', true);
+            }
+
+            // Create a new chapter object (we are assuming chapter title is unique/sequential)
+            const newChapter = {
+                id: chapterTitle, // Using chapter title as ID/sort key
+                title: chapterTitle,
+                pageUrls: pages,
+                publishedAt: new Date().toISOString()
+            };
+
+            try {
+                const chapterDocRef = doc(getChapterDocCollectionRef(), mangaId);
+                const docSnap = await getDoc(chapterDocRef);
+                
+                let chaptersArray = [];
+                if (docSnap.exists()) {
+                    chaptersArray = docSnap.data().chapters || [];
+                }
+
+                // Check if chapter already exists (for editing)
+                const existingIndex = chaptersArray.findIndex(ch => ch.id === newChapter.id);
+
+                if (existingIndex > -1) {
+                    // Update existing chapter
+                    chaptersArray[existingIndex] = newChapter;
+                    showMessage('chapterMessageBox', `মাঙ্গা ${mangaId} এর অধ্যায় ${chapterTitle} সফলভাবে আপডেট করা হয়েছে।`);
+                } else {
+                    // Add new chapter
+                    chaptersArray.push(newChapter);
+                    showMessage('chapterMessageBox', `মাঙ্গা ${mangaId} এর নতুন অধ্যায় ${chapterTitle} সফলভাবে যোগ করা হয়েছে।`);
+                }
+                
+                // Sort chapters (e.g., numerically if titles are numbers)
+                chaptersArray.sort((a, b) => {
+                    const numA = parseFloat(a.title);
+                    const numB = parseFloat(b.title);
+                    if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
+                    return a.title.localeCompare(b.title);
+                });
+
+                // Save/Update the entire chapter document
+                await setDoc(chapterDocRef, { mangaId: mangaId, chapters: chaptersArray, updatedAt: new Date().toISOString() }, { merge: true });
+
+                // Also update the manga document's latestChapter field
+                const mangaRef = doc(getMangaCollectionRef(), mangaId);
+                await setDoc(mangaRef, { latestChapter: chaptersArray[chaptersArray.length - 1].title }, { merge: true });
+                
+                document.getElementById('chapterForm').reset();
+                document.getElementById('chapterDocId').value = '';
+            } catch (error) {
+                console.error("Error saving chapter:", error);
+                showMessage('chapterMessageBox', `অধ্যায় সেভ করতে ব্যর্থ: ${error.message}`, true);
+            }
+        }
+
+        async function deleteChapter(mangaId, chapterTitle) {
+            if (!confirm(`আপনি কি নিশ্চিত যে আপনি ${mangaId} মাঙ্গা থেকে অধ্যায় ${chapterTitle} মুছে ফেলতে চান?`)) return;
+            if (!isAuthReady || !db) return showMessage('chapterMessageBox', 'ডেটাবেস প্রস্তুত নয়। অপেক্ষা করুন।', true);
+
+            try {
+                const chapterDocRef = doc(getChapterDocCollectionRef(), mangaId);
+                const docSnap = await getDoc(chapterDocRef);
+                
+                if (docSnap.exists()) {
+                    let chaptersArray = docSnap.data().chapters || [];
+                    const initialLength = chaptersArray.length;
+                    
+                    // Filter out the chapter to delete
+                    chaptersArray = chaptersArray.filter(ch => ch.title !== chapterTitle);
+
+                    if (chaptersArray.length < initialLength) {
+                        // Update the document
+                        await setDoc(chapterDocRef, { chapters: chaptersArray, updatedAt: new Date().toISOString() }, { merge: true });
+
+                        // Update latestChapter in manga doc
+                        const latestChapter = chaptersArray.length > 0 ? chaptersArray[chaptersArray.length - 1].title : null;
+                        const mangaRef = doc(getMangaCollectionRef(), mangaId);
+                        await setDoc(mangaRef, { latestChapter: latestChapter }, { merge: true });
+
+                        showMessage('chapterMessageBox', `মাঙ্গা ${mangaId} থেকে অধ্যায় ${chapterTitle} সফলভাবে মুছে ফেলা হয়েছে।`);
+                    } else {
+                        showMessage('chapterMessageBox', 'অধ্যায়টি খুঁজে পাওয়া যায়নি।', true);
+                    }
+                } else {
+                    showMessage('chapterMessageBox', 'অধ্যায় ডেটা খুঁজে পাওয়া যায়নি।', true);
+                }
+            } catch (error) {
+                console.error("Error deleting chapter:", error);
+                showMessage('chapterMessageBox', `অধ্যায় মুছে ফেলতে ব্যর্থ: ${error.message}`, true);
+            }
+        }
+
+
+        // =========================================================================
+        // UI RENDERING FUNCTIONS
+        // =========================================================================
+
+        function updateDashboard() {
+            const totalManga = mangaList.length;
+            const ongoingManga = mangaList.filter(m => m.status === 'ongoing').length;
+
+            document.getElementById('mangaCount').textContent = totalManga;
+            
+            // Render Recent Manga List
+            const recentListBody = document.getElementById('recentMangaList');
+            recentListBody.innerHTML = ''; // Clear previous content
+
+            const recentManga = mangaList.slice(0, 5); // Show top 5
+            
+            if (recentManga.length === 0) {
+                recentListBody.innerHTML = `<tr><td colspan="4" class="text-center text-text-secondary">কোনো মাঙ্গা পাওয়া যায়নি।</td></tr>`;
+                return;
+            }
+
+            recentManga.forEach(manga => {
+                const statusText = manga.status === 'ongoing' ? 'চলমান' : 'সম্পন্ন';
+                const statusClass = manga.status === 'ongoing' ? 'status-ongoing' : 'status-completed';
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <div class="manga-title-cell">${manga.title}</div>
+                    </td>
+                    <td><div class="table-subtitle">${manga.genres.slice(0, 3).join(', ')}</div></td>
+                    <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                    <td>${new Date(manga.createdAt).toLocaleDateString('bn-BD')}</td>
+                `;
+                recentListBody.appendChild(row);
+            });
+        }
+
+        function renderAllMangaTable(mangas) {
+            const tableBody = document.getElementById('allMangaList');
+            tableBody.innerHTML = ''; // Clear previous content
+            
+            if (mangas.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="5" class="text-center text-text-secondary">কোনো মাঙ্গা পাওয়া যায়নি।</td></tr>`;
+                return;
+            }
+
+            mangas.forEach(manga => {
+                const statusText = manga.status === 'ongoing' ? 'চলমান' : 'সম্পন্ন';
+                const statusClass = manga.status === 'ongoing' ? 'status-ongoing' : 'status-completed';
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${manga.id.substring(0, 8)}...</td>
+                    <td class="manga-title-cell">${manga.title}</td>
+                    <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                    <td>${manga.author}</td>
+                    <td class="action-btns">
+                        <button class="btn btn-secondary text-xs p-2" onclick="loadMangaForEdit('${manga.id}')"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-danger text-xs p-2" onclick="deleteManga('${manga.id}', '${manga.title.replace(/'/g, "\\'")}')"><i class="fas fa-trash"></i></button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        function loadMangaForEdit(mangaId) {
+            const manga = mangaList.find(m => m.id === mangaId);
+            if (!manga) return showMessage('mangaMessageBox', 'মাঙ্গা খুঁজে পাওয়া যায়নি।', true);
+
+            document.getElementById('mangaId').value = manga.id;
+            document.getElementById('title').value = manga.title;
+            document.getElementById('author').value = manga.author;
+            document.getElementById('imageUrl').value = manga.imageUrl;
+            document.getElementById('genres').value = manga.genres.join(', ');
+            document.getElementById('status').value = manga.status;
+            document.getElementById('description').value = manga.description;
+            document.getElementById('mangaSubmitBtn').textContent = 'আপডেট করুন';
+
+            // Switch to the correct tab
+            switchSection('manga-manage');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        window.loadMangaForEdit = loadMangaForEdit; // Make available globally
+        window.deleteManga = deleteManga; // Make available globally
+        
+        function populateMangaDropdown() {
+            const select = document.getElementById('mangaSelect');
+            const currentSelected = select.value; // Preserve selection if possible
+            select.innerHTML = '<option value="">--- মাঙ্গা নির্বাচন করুন ---</option>';
+            
+            mangaList.forEach(manga => {
+                const option = document.createElement('option');
+                option.value = manga.id;
+                option.textContent = manga.title;
+                if (manga.id === currentSelected) {
+                    option.selected = true;
+                }
+                select.appendChild(option);
+            });
+        }
+        
+        function renderChapterTable(chapterDocs) {
+            const tableBody = document.getElementById('chapterTableList');
+            tableBody.innerHTML = ''; // Clear previous content
+
+            if (chapterDocs.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="4" class="text-center text-text-secondary">কোনো অধ্যায় ডেটা পাওয়া যায়নি।</td></tr>`;
+                return;
+            }
+
+            // Flatten the chapterDocList into individual chapter rows
+            let allChapters = [];
+            chapterDocs.forEach(doc => {
+                const manga = mangaList.find(m => m.id === doc.mangaId);
+                const mangaTitle = manga ? manga.title : `[মুছে ফেলা মাঙ্গা: ${doc.mangaId.substring(0, 8)}...]`;
+                
+                (doc.chapters || []).forEach(chapter => {
+                    allChapters.push({
+                        mangaId: doc.mangaId,
+                        mangaTitle: mangaTitle,
+                        chapterTitle: chapter.title,
+                        pageCount: chapter.pageUrls ? chapter.pageUrls.length : 0
+                        // Note: Edit functionality for chapters is complex and omitted for minimum change
+                    });
+                });
+            });
+
+            // Sort by manga title then chapter title
+            allChapters.sort((a, b) => a.mangaTitle.localeCompare(b.mangaTitle) || a.chapterTitle.localeCompare(b.chapterTitle));
+
+            allChapters.forEach(ch => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="manga-title-cell">${ch.mangaTitle}</td>
+                    <td>${ch.chapterTitle}</td>
+                    <td>${ch.pageCount}</td>
+                    <td class="action-btns">
+                        <button class="btn btn-danger text-xs p-2" onclick="deleteChapter('${ch.mangaId}', '${ch.chapterTitle.replace(/'/g, "\\'")}')"><i class="fas fa-trash"></i></button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+        
+        window.deleteChapter = deleteChapter;
+
+        // =========================================================================
+        // UI Navigation and General Handlers
+        // =========================================================================
+
+        function switchSection(sectionId) {
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.style.display = 'none';
+            });
+            document.getElementById(sectionId).style.display = 'block';
+
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            document.querySelector(`.nav-link[data-section="${sectionId}"]`).classList.add('active');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Setup Firebase and start data listeners
+            setupFirebase();
+
+            // Navigation handler
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    switchSection(this.getAttribute('data-section'));
+                });
+            });
+
+            // Manga Form Submission
+            document.getElementById('mangaForm').addEventListener('submit', handleMangaFormSubmit);
+            
+            // Manga Form Clear Button
+            document.getElementById('mangaClearBtn').addEventListener('click', function() {
+                document.getElementById('mangaForm').reset();
+                document.getElementById('mangaId').value = '';
+                document.getElementById('mangaSubmitBtn').textContent = 'যোগ করুন';
+                document.getElementById('mangaMessageBox').style.display = 'none';
+            });
+
+            // Chapter Form Submission
+            document.getElementById('chapterForm').addEventListener('submit', handleChapterFormSubmit);
+            
+            // Chapter Form Clear Button
+            document.getElementById('chapterClearBtn').addEventListener('click', function() {
+                document.getElementById('chapterForm').reset();
+                document.getElementById('chapterDocId').value = '';
+                document.getElementById('chapterMessageBox').style.display = 'none';
+            });
+
+            // Initial view
+            switchSection('dashboard');
+        });
+    </script>
+</body>
+</html>
+
